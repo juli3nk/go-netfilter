@@ -165,7 +165,7 @@ func (iptables *IPTables) Policy(table, chain, target string) error {
 		return fmt.Errorf("Policy only applied to Built-in chain")
 	}
 
-	if target != "ACCEPT" || target != "DROP" {
+	if target != "ACCEPT" && target != "DROP" {
 		return fmt.Errorf("Policy only accept the 2 targets ACCEPT and DROP")
 	}
 
@@ -198,7 +198,7 @@ type ZeroOptions struct {
 
 // Zero the packet and byte counters in all chains, or only the given chain, or only the given rule in a chain.
 func (iptables *IPTables) Zero(table string, opts *ZeroOptions) error {
-	params := []string{"-Z"}
+	params := []string{"-t", table, "-Z"}
 
 	if opts.Chain != "" {
 		params = append(params, opts.Chain)
