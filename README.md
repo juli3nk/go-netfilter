@@ -3,11 +3,13 @@
 ## Example
 
 ```go
+package main
+
 import (
 	"fmt"
 	"os"
 
-	"github.com/juli3nk/netfilter/iptables"
+	"github.com/juli3nk/go-netfilter/iptables"
 )
 
 func main() {
