@@ -352,7 +352,7 @@ func (iptables *IPTables) runList(table string, opts *ListOptions, args ...strin
 func (opts *ListOptions) CreateListChain(table, chain, line string) ListOutputChain {
 	var (
 		reChainNoVerbose = regexp.MustCompile(`^Chain (.*) \(policy\s*(.*)\)$`)
-		reChainVerbose = regexp.MustCompile(`^Chain (.*) \(policy\s*(.*)\s+([0-9]+)\s+packets,\s+([0-9]+)\s*bytes\)$`)
+		reChainVerbose = regexp.MustCompile(`^Chain (.*) \(policy\s*(.*)\s+([0-9]+[BKMG]?)\s+packets,\s+([0-9]+[BKMG]?)\s*bytes\)$`)
 		reChainUser = regexp.MustCompile(`^Chain (.*) \(([0-9]+)\sreferences\)$`)
 	)
 
@@ -363,12 +363,17 @@ func (opts *ListOptions) CreateListChain(table, chain, line string) ListOutputCh
 		if opts.Verbose {
 			chaindata := reChainVerbose.FindStringSubmatch(line)
 
-			rChain.Policy = chaindata[2]
-			rChain.Packets = chaindata[3]
-			rChain.Bytes = chaindata[4]
+			if len(chaindata) > 0 {
+				rChain.Policy = chaindata[2]
+				rChain.Packets = chaindata[3]
+				rChain.Bytes = chaindata[4]
+			}
 		} else {
 			chaindata := reChainNoVerbose.FindStringSubmatch(line)
-			rChain.Policy = chaindata[2]
+
+			if len(chaindata) > 0 {
+				rChain.Policy = chaindata[2]
+			}
 		}
 
 		rChain.BuiltIn = true
